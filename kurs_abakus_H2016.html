@@ -1,0 +1,81 @@
+<html>
+<head>
+  <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css" />
+  <script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script>
+
+  <!-- Norkart sin Leaflet-plugin for bakgrunnskart -->
+  <script src="http://tsadm.webatlas.no/sh/leafletplugins/L.TileLayer.Webatlas/v1.0.0/L.TileLayer.Webatlas.min.js"></script>
+
+  <!--[if lte IE 8]>
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v2/themes/css/cartodb.ie.css" />
+  <![endif]-->
+  <style>
+    /*html, body {width:100%; height:100%; padding: 0; margin: 0;}*/
+    #cartodb-map { width: 50%; height:75%;}
+  </style>
+
+  <script>
+    var map;
+    var kursns = {};
+    function init(){
+      // initiate leaflet map
+      map = new L.Map('cartodb-map', { //id'en til div-taggen du vil ha kartet i
+        center: [63.0,10.0],//koordinatene til cirka-Trondheim
+        zoom: 4
+      })
+
+      /*Legg til et kartlag (tilecache) som bruker XYZ-konvensjon. 
+      L.tileLayer('https://dnv9my2eseobd.cloudfront.net/v3/cartodb.map-4xtxp73f/{z}/{x}/{y}.png', {
+        attribution: 'Mapbox <a href="http://mapbox.com/about/maps" target="_blank">Terms &amp; Feedback</a>'
+      }).addTo(map);
+      */
+
+      //Legg til et bakgrunnskart fra Norkart med plugin
+      L.tileLayer.webatlas({apikey: '59c0b457-d253-451b-9fbf-74f23881488a', mapType: L.TileLayer.Webatlas.Type.GREY}).addTo(map);
+
+
+      var layerUrl = 'https://alexanno-test.carto.com/api/v2/viz/180c2bb2-7dd9-11e6-a0ba-0ecd1babdde5/viz.json';
+
+      //funksjon for å oppdatere carto-layeret sin SQL. Resultatet er oppdatert "tilecache"
+      kursns.updateQuery = function(cartosublayer, minBelop) {
+        cartosublayer.set({
+          sql: "SELECT * FROM omsetningsdata where omsetningsbeloep >= " + minBelop
+        });
+      }
+
+      //funksjon for å kjøre SQL og få tilbake dataresultatet som geojson
+      kursns.runSQL = function(minBelop, cbFunc) {
+        var sql = new cartodb.SQL({ user: 'alexanno-test' });
+        sql.execute("SELECT * FROM omsetningsdata WHERE omsetningsbeloep > {{minbelop}}", { 
+            minbelop: minBelop 
+          })
+          .done(function(data) {
+            console.log(data.rows);
+            cbFunc.call(this,data);
+          })
+          .error(function(errors) {
+            // errors contains a list of errors
+            console.log("errors:" + errors);
+        });
+      }
+
+      cartodb.createLayer(map, layerUrl)
+        .addTo(map)
+        .on('done', function(layer) {
+          //Gjør ting etter alt er lastet
+
+          //legg carto-layeret i et globalt namespace
+          kursns.cartolayer = layer;
+          kursns.cartoLayer_omsetningsdata = layer.getSubLayer(1);
+
+        }).on('error', function() {
+          //log the error
+        });
+    }  
+  </script>
+</head>
+
+<body onload="init()">
+  <div id='cartodb-map'></div>
+</body>
+</html>

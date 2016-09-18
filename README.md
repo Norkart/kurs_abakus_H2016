@@ -10,7 +10,10 @@
 
 # Nyttige linker
 - http://geoforum.github.io/
+- https://github.com/Norkart/L.TileLayer.Webatlas
 - https://carto.com/docs/tutorials/query_by_distance/
 - https://carto.com/academy/courses/sql-postgis/intro-to-sql-and-postgis/
+- https://carto.com/docs/carto-engine/carto-js/api-methods/
+- https://carto.com/docs/carto-engine/carto-js/sql/
 - http://postgis.net/
 - http://leafletjs.com/
