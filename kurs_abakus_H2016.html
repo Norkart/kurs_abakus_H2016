@@ -44,11 +44,10 @@
       }
 
       //funksjon for å kjøre SQL og få tilbake dataresultatet som geojson
-      kursns.runSQL = function(minBelop, cbFunc) {
+      kursns.runSQL = function(sqlquery, variables, cbFunc) {
         var sql = new cartodb.SQL({ user: 'alexanno-test' });
-        sql.execute("SELECT * FROM omsetningsdata WHERE omsetningsbeloep > {{minbelop}}", { 
-            minbelop: minBelop 
-          })
+        console.log(sqlquery,variables)
+        sql.execute(sqlquery, variables)
           .done(function(data) {
             console.log(data.rows);
             cbFunc.call(this,data);
@@ -64,10 +63,25 @@
         .on('done', function(layer) {
           //Gjør ting etter alt er lastet
 
-          //legg carto-layeret i et globalt namespace
+          //legg carto-layeret i et globalt namespace 
           kursns.cartolayer = layer;
           kursns.cartoLayer_omsetningsdata = layer.getSubLayer(1);
 
+          //Legg til "klikk-i-kart"-event
+          map.on('click', function(e) {
+            console.log(e, e.latlng);
+            //kjør en spørring basert på hvor brukeren klikket
+            //se: http://leafletjs.com/reference.html#event-objects
+            kursns.runSQL( // få de 100 nærmeste omsetninger uavhengig av avstanden til de (KNN)
+              "SELECT * from omsetningsdata order by the_geom <-> ST_SetSRID(ST_MakePoint({{latlng}}),4326) limit 100",
+              {
+                latlng: e.latlng.lng + ", " + e.latlng.lat
+              },
+              function(data) {
+                console.log(data.rows);
+              }
+            );
+          });
         }).on('error', function() {
           //log the error
         });
