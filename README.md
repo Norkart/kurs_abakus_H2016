@@ -1,4 +1,22 @@
 # Kurs for Abakus i Carto.js
+- https://www.youtube.com/watch?v=uA_emKrE8Rg
+- http://www.norkart.no/sommerjobb-er-bade-fag-og-festligheter/
+- http://www.norkart.no/blogg/
+
+1. Demo på Carto (og PostGIS)
+  1. Hente data fra OpenStreetMap
+1. Gjennomgang av eksempel på carto.js (og Leaflet)
+  1. Tilecacher og hente viz.json
+  1. Dynamisk endring av tilecache
+  1. Hente data via SQL-api
+1. Deres tur!
+  1. Pizza
+  1. Kode
+  1. Konkurranse (alenos@norkart.no)
+  1. Premier!
+
+
+# Tutorial
 - Last opp data til Carto
  - Hent data fra https://alexanno-test.carto.com/datasets 
  - Bruk data fra http://OpenStreetMap.org via https://overpass-turbo.eu/
