@@ -28,6 +28,7 @@
 
 # Nyttige linker
 - http://geoforum.github.io/
+- https://github.com/GeoForum/veiledning05#readme
 - https://github.com/Norkart/L.TileLayer.Webatlas
 - https://carto.com/docs/tutorials/query_by_distance/
 - https://carto.com/academy/courses/sql-postgis/intro-to-sql-and-postgis/
